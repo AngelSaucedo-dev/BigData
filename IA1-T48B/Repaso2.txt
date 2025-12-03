@@ -1,0 +1,96 @@
+Una heurística h(n) es admisible si: Nunca sobreestima el costo de alcanzar el objetivo.
+¿Cuál es el otro nombre de la estrategia de búsqueda informada? Búsqueda heurística
+¿Por qué la búsqueda de profundidad iterativa (IDS) es generalmente preferida como método de búsqueda no informada cuando el espacio de búsqueda es grande y la profundidad de la solución es desconocida? Porque combina la completitud de BFS con la eficiencia espacial de DFS.
+¿En qué se diferencia el algoritmo IDA* (A* con profundidad iterativa) de la búsqueda de profundidad iterativa estándar? El límite de corte es el costo f, no la profundidad.
+¿Cuál de los siguientes algoritmos se utiliza generalmente como algoritmo de búsqueda en un problema de satisfacción de restricciones? Búsqueda preferente por profundidad
+¿Qué se utiliza para mejorar el rendimiento de la búsqueda heurística? Calidad de la función heurística
+¿Cómo se generan los nuevos estados en el algoritmo genético? cruce, mutación
+El algoritmo por ascensión de colinas con reinicio aleatorio elige al azar de entre los movimientos cuesta arriba; la probabilidad de selección puede variar con la inclinación del movimiento cuesta arriba: False.
+En la búsqueda primero el mejor (best-first search), se selecciona un nodo para expansión basándose en: Una función de evaluación f(n)
+La búsqueda voraz primero el mejor (Greedy best-first search) utiliza la función de evaluación: f(n) = h(n)
+Marcar las características principales del Algoritmo Genético técnicas de cruce, mutación aleatoria, función de aptitud
+¿Cuál es la función de evaluación utilizada por la búsqueda A*? f(n) = g(n) + h(n)
+La búsqueda de costo uniforme expande el nodo n con el valor más bajo de: g(n)
+La búsqueda en profundidad (DFS) utiliza una cola LIFO. ¿Cuál es la principal ventaja de DFS sobre BFS en términos de complejidad? Requiere mucha menos memoria (complejidad espacial lineal O(bm))
+Una forma efectiva de generar heurísticas admisibles es resolver: Problemas relajados (con menos restricciones en las acciones).
+¿Qué caracteriza a las estrategias de búsqueda informada (heurística) frente a las no informadas? Utilizan conocimiento específico del problema más allá de su definición para encontrar soluciones más eficientemente.
+La búsqueda A* es completa y óptima si: h(n) es admisible (en búsqueda en árbol) o consistente (en búsqueda en grafo).
+El factor de ramificación efectivo b∗ es una métrica para evaluar la calidad de una heurística. Un valor de b∗: Una heurística de alta calidad.
+¿Cuál(es) de los siguientes algoritmos puede ser usado para resolver un problema de satisfacción de restricciones con dominios finitos? Algoritmos de búsqueda BFS/DFS, Algoritmos de búsqueda heurística
+¿Cómo se llama el proceso de eliminar detalles innecesarios de una representación para facilitar la resolución de un problema? Abstracción
+Un problema de búsqueda bien definido consta de cinco componentes. ¿Cuál de los siguientes NO es uno de ellos? La heurística de búsqueda
+¿Cuándo es óptima la búsqueda de costo uniforme? Siempre que los costos de paso sean mayores o iguales a una pequeña constante positiva ϵ.
+Se dice que A* es óptimamente eficiente para una heurística consistente dada porque: Ningún otro algoritmo óptimo garantiza expandir menos nodos que A*.
+Una heurística es una forma de intentar: buscar y medir hasta qué punto un nodo en un árbol de búsqueda parece distar de un objetivo
+Las estrategias de búsqueda no informadas son mejores que las estrategias de búsqueda informadas: False
+¿Cuál es la función de evaluación utilizada por la búsqueda A*? f(n) = g(n) + h(n)
+¿Cuál(es) de los siguientes algoritmos puede ser usado para resolver un problema de satisfacción de restricciones con dominios finitos? Algoritmos de búsqueda BFS/DFS, Algoritmos de búsqueda heurística
+En la búsqueda en anchura (BFS), ¿qué estructura de datos se utiliza para implementar la frontera y asegurar que se expanda el nodo más superficial? Cola FIFO (First-In, First-Out)
+La búsqueda primero el mejor se puede implementar usando la siguiente estructura de datos: Cola prioritaria
+La búsqueda A* es completa y óptima si: h(n) es admisible (en búsqueda en árbol) o consistente (en búsqueda en grafo).
+¿Cómo se generan los nuevos estados en el algoritmo genético? mutación, cruce
+Si tenemos dos heurísticas admisibles h1 y h2 , y h2(n)≥h1(n) para todo nodo n , se dice que: h₂ domina a h₁ y es generalmente mejor usar h₂.
+Un problema de búsqueda bien definido consta de cinco componentes. ¿Cuál de los siguientes NO es uno de ellos? La heurística de búsqueda
+¿Cuál de los siguientes algoritmos se utiliza generalmente como algoritmo de búsqueda en un problema de satisfacción de restricciones? Búsqueda heurística
+
+
+Misioneros prisioneros
+type accion = M1 | M2 | C1 | C2 | MC
+
+// Estado: (misioneros izquierda, canibales izquierda, bote izquierda)
+type Estado = int * int * bool
+
+let valido (mI, cI, _) =
+    let mD = 3 - mI
+    let cD = 3 - cI
+    mI >= 0 && cI >= 0 && mI <= 3 && cI <= 3 &&
+    (mI = 0 || mI >= cI) &&
+    (mD = 0 || mD >= cD)
+
+let sucesores (mI, cI, boteIzq) =
+    let dir = if boteIzq then -1 else 1
+    [
+        (1,0,M1); (2,0,M2); (0,1,C1); (0,2,C2); (1,1,MC)
+    ]
+    |> List.map (fun (m,c,a) ->
+        let s' = (mI + dir*m, cI + dir*c, not boteIzq)
+        (s', a)
+    )
+    |> List.filter (fun (s,_) -> valido s)
+
+type Nodo = { estado: Estado; acciones: accion list }
+
+// Cola EXACTA como tu profesor la dio
+module Cola =
+    let vacia = ([],[])
+    let enqueue (f,t) n = (f, n::t)
+    let rec dequeue = function
+        | (x::f, t) -> Some(x, (f,t))
+        | ([], x::t) -> dequeue (List.rev (x::t), [])
+        | ([],[]) -> None
+
+let resolverMC () =
+    let inicial = (3,3,true)
+    let objetivo = (0,0,false)
+
+    let visitados = System.Collections.Generic.HashSet<Estado>()
+    let mutable frontera = Cola.enqueue Cola.vacia { estado=inicial; acciones=[] }
+
+    let rec loop () =
+        match Cola.dequeue frontera with
+        | None -> []
+        | Some(nodo, resto) ->
+            frontera <- resto
+
+            if visitados.Contains nodo.estado then 
+                loop()
+            else
+                visitados.Add nodo.estado |> ignore
+
+                if nodo.estado = objetivo then nodo.acciones
+                else
+                    for (s', a) in sucesores nodo.estado do
+                        frontera <- Cola.enqueue frontera { estado=s'; acciones=nodo.acciones @ [a] }
+                    loop()
+
+    loop()
