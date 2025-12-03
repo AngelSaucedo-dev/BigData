@@ -1,0 +1,18 @@
+¿Qué se entiende por secuencia de percepciones del agente? Historia completa de las cosas percibidas
+¿Qué agente trata con estados felices e infelices? Agente basado en utilidad
+¿Dónde está incluida la medida de rendimiento? Entorno de tareas (PEAS)
+¿Qué tipo de entorno es estratégico en la inteligencia artificial? Estocástico
+Una solución a un problema es una ruta desde el estado inicial hasta el estado de objetivo. La calidad de la solución se mide por la función de costo de ruta, y una solución óptima tiene el costo de ruta más alto entre todas las soluciones. Indique si es verdadero o falso: False
+¿Qué búsqueda se implementa con una cola con política de inserción y borrado FIFO? Búsqueda preferente en amplitud
+Para la búsqueda sobre un grafo, ¿cómo uno puede deshacerse de los estados repetidos? manteniendo un conjunto de vértices visitados
+¿Cuál(es) de la siguientes técnicas de búsqueda son no informadas? Búsqueda preferente por amplitud, Búsqueda de costo uniforme
+Un problema en un espacio de búsqueda se define por: todas las demás (Que incluye estado inicial, test objetivo y estados intermedios).
+¿El juego de Poker es de un solo agente? False
+¿Cual es la salida de la siguiente expresión en F# en modo interactivo? System.Math.PI;;: val it : float = 3.141592654
+¿Cual es la salida de la siguiente expresión en F# en modo interactivo? val areaCirculo : r:float -> float , val it : float = 12.56637061
+Suponga la siguiente declaración let f = List.rev << List.map List.rev ¿Cuál es la evaluación de f [[1;2]; [3;4;5]]?: Ninguna de las otras.
+(La evaluación correcta es [[5;4;3]; [2;1]] si se hace correctamente, pero esa opción no coincide exactamente con la lista dada.)
+Indique la evaluación de la siguiente expresión [2.4 .. 3.0 ** 1.7] Note que 3.0 ** 1.7 = 6.47300784: Ninguna de las otras (El rango [2.4 .. 6.47300784] en F# genera [2.4; 3.4; 4.4; 5.4; 6.4], que coincide con ninguna de las opciones exactamente si se considera precisión decimal completa.)
+Seleccione definiciones correctas para g : int -> int, donde g(n)=4n2: let f = fun n -> 4 * n * n, let f n = 4 * n * n
+Seleccione definiciones correctas para g : int -> int, donde g(n)=4n^2: let f = function | n -> 4 * n * n, let f = fun n -> 4 * n * n, let f n = 4 * n * n
+¿Cual es el valor de la evaluación de f(3.0, 2) usando la siguiente definición en F#?. let cero = 0;; let rec f = function | (x,cero) -> 1.0 | (x,n) -> x * f(x,n-1);;: Ninguna de las otras. (La evaluación de f(3.0, 2) sería 3.0 * 3.0 * 1.0 = 9.0, que no aparece entre las opciones.)
