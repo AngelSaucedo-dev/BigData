@@ -1,0 +1,219 @@
+En la mteria de Inteligencia artificial se hizo un proyecto en F# que contiene la siguiente estructura de archivos
+Pila.fs
+namespace Busqueda
+//Representar una cola mediante una lista
+// elementos se insertan al inicio de la lista
+
+module Pila =
+    let vacia = []
+    let push pila n = n :: pila
+    let pop = function
+        | n :: pila -> Some(n, pila)
+        | [] -> None
+
+
+Cola.fs
+namespace Busqueda
+// Representar una cola mediante una lista
+// elementos se insertan al final de la lista
+module Cola = 
+    let vacia = [], []
+    let enqueue (frente, trasera) n =
+        (frente, n :: trasera) //Complejidad computacional constante
+    let rec dequeue = function
+        | (n :: frente, trasera) -> Some (n, (frente, trasera))
+        | ([], n :: trasera) -> dequeue (List.rev (n :: trasera), []) //Operacion costosa
+        | ([], []) -> None
+
+Búsqueda.fs
+namespace Busqueda
+// variables de tipo
+// 's: estado, 'a: accion, 'b: bolsa
+
+// Problema
+type problema<'s,'a> =
+    {
+        inicial    : 's
+        sucesores  : 's -> list<'a * 's>
+        meta       : 's -> bool
+        costo      : 's -> 'a -> 's -> float
+    }
+
+// type 'a option = None | Some of 'a
+
+// nodo
+type nodo<'s,'a> = 
+    {
+        profundidad   : int
+        g             : float
+        estado        : 's
+        padre         : option<nodo<'s,'a>>
+        accion        : option<'a>
+    }
+
+// estrategia
+type estrategia<'s,'a,'b> =
+    {
+        insertar : 'b -> nodo<'s,'a> -> 'b
+        sacar    : 'b -> option<nodo<'s,'a> * 'b>
+        vacia    : 'b
+    }
+
+module Capitulo3 =
+    let hacer_nodo estado =
+        {
+            padre = None
+            accion = None
+            profundidad = 0
+            estado = estado
+            g      = 0.0
+        }
+    
+    let expand nodo problema =
+        problema.sucesores nodo.estado
+        |> List.map (fun (accion, estado) ->
+                {
+                    padre = Some nodo
+                    accion = Some accion
+                    estado = estado
+                    profundidad = nodo.profundidad + 1
+                    g = nodo.g + problema.costo nodo.estado accion estado
+                }
+            )
+
+    let busqueda_arbol problema estrategia =
+        let bolsa =
+            hacer_nodo problema.inicial
+            |> estrategia.insertar estrategia.vacia
+        let rec loop bolsa =
+            match estrategia.sacar bolsa with
+            | Some (n, bolsa) -> 
+                if problema.meta n.estado
+                then Some n
+                else expand n problema
+                     |> List.fold estrategia.insertar bolsa
+                     |> loop
+            | None -> None
+        loop bolsa
+    
+    let busqueda_grafo problema estrategia key =
+        let bolsa =
+            hacer_nodo problema.inicial
+            |> estrategia.insertar estrategia.vacia
+        let rec loop (visitados, bolsa) =
+            match estrategia.sacar bolsa with
+            | Some (n, bolsa) -> 
+                if problema.meta n.estado
+                then Some n
+                else if Set.contains (key n) visitados
+                     then loop (visitados, bolsa )
+                     else
+                        expand n problema
+                        |> List.fold estrategia.insertar bolsa
+                        |> (fun bolsa -> loop(Set.add (key n) visitados, bolsa))
+            | None -> None
+        loop (Set.empty, bolsa)
+
+    let ascension_colinas h problema =
+        let actual = hacer_nodo problema.inicial
+        let rec loop actual =
+            let vecino = 
+                expand actual problema
+                |> List.maxBy h
+            if h vecino <= h actual
+            then actual
+            else loop vecino
+        loop actual   
+
+    let rec reinicio_aleatorio h problema =
+        let p = problema ()
+        let resultado = 
+            ascension_colinas h p
+        if p.meta resultado.estado
+        then resultado
+        else reinicio_aleatorio h problema
+
+    
+    let rec acciones n =
+        match n.padre, n.accion with
+        | Some p, Some a -> acciones p @ [a]
+        | _ -> []
+
+CostoUniorme.fs
+namespace Busqueda
+// Cola  prioritaria implementada en Map<'key, 'value>
+//Map esta implementado mediante un arbol roji-negro
+
+module CostoUniforme =
+
+    let key n = n.g, n.estado
+    let estrategia =
+        {
+            insertar = fun map n -> Map.add (key n) n map
+            sacar = fun map ->
+                        match Map.tryPick(fun k n -> Some (k,n)) map with
+                        | Some (k,n) -> Some (n,Map.remove k map)
+                        | None -> None
+            vacia = Map.empty
+        }
+
+DFSL.fs
+namespace Busqueda
+
+module DFSL =
+    open Pila
+    let estrategia l =
+        {
+            insertar = 
+                fun pila n ->
+                    if n.profundidad <= l
+                    then push pila n
+                    else pila
+            sacar = pop
+            vacia = vacia
+        }
+
+    let key = fun n -> n.profundidad, n.estado
+
+IDFSL.fs
+namespace Busqueda
+
+module IDFSL =
+    let IDFSL problema =
+        let rec loop depth =
+            match 
+                Capitulo3.busqueda_grafo
+                    problema
+                    (DFSL.estrategia depth) 
+                    DFSL.key
+                with
+            | None -> loop (depth + 1)
+            | Some n -> Some n
+        loop 0
+
+DFS.fs
+namespace Busqueda
+
+module DFS =
+    open Pila
+    let estrategia =
+        {
+            insertar = push
+            sacar = pop
+            vacia = vacia
+        }
+    let key =  fun n -> n.estado
+
+BFS.fs
+namespace Busqueda
+
+module BFS =
+    open Cola
+    let estrategia =
+        {
+            insertar = enqueue
+            sacar = dequeue
+            vacia = vacia
+        }
+
+    let key n = n.estado
