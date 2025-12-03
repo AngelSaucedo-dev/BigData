@@ -1,1 +1,154 @@
 respuestas:
+1.-
+
+let resolverEcuacion () : (string * int) list =
+    let dominio = [1..10]
+
+    let rec backtrack listaVars =
+        match listaVars with
+        // Ya tenemos A, B y C → verificar restricciones
+        | [("A", a); ("B", b); ("C", c)] ->
+            if a < b && a + b = c then
+                Some [("A", a); ("B", b); ("C", c)]
+            else
+                None
+
+        // A y B asignados → elegir C
+        | [("A", a); ("B", b)] ->
+            dominio
+            |> List.tryPick (fun c ->
+                backtrack [("A", a); ("B", b); ("C", c)]
+            )
+
+        // Solo A asignado → elegir B
+        | [("A", a)] ->
+            dominio
+            |> List.tryPick (fun b ->
+                backtrack [("A", a); ("B", b)]
+            )
+
+        // Ninguna variable → elegir A
+        | [] ->
+            dominio
+            |> List.tryPick (fun a ->
+                backtrack [("A", a)]
+            )
+
+        | _ -> None
+
+    // Ejecutar backtracking y devolver solución
+    backtrack []
+    |> Option.defaultValue []
+
+
+
+
+
+
+2.-
+
+open System
+open System.Collections.Generic
+
+// Heurística: piezas fuera de lugar (sin contar el 0)
+let heuristica (estado: int list) =
+    estado
+    |> List.mapi (fun i v -> if v <> 0 && v <> i then 1 else 0)
+    |> List.sum
+
+// Movimientos posibles (Up, Down, Left, Right)
+let movimientos =
+    dict [
+        "Up",    -3
+        "Down",   3
+        "Left",  -1
+        "Right",  1
+    ]
+
+// Verifica si un movimiento es válido
+let movimientoValido pos accion =
+    match accion with
+    | "Up"    -> pos > 2
+    | "Down"  -> pos < 6
+    | "Left"  -> pos % 3 <> 0
+    | "Right" -> pos % 3 <> 2
+    | _ -> false
+
+// Aplica un movimiento y genera un nuevo estado
+let aplicarMovimiento (estado: int list) accion =
+    let pos0 = estado |> List.findIndex (fun x -> x = 0)
+    if movimientoValido pos0 accion then
+        let offset = movimientos.[accion]
+        let newPos = pos0 + offset
+        let arr = estado |> List.toArray
+        let tmp = arr.[newPos]
+        arr.[newPos] <- 0
+        arr.[pos0] <- tmp
+        Some (arr |> Array.toList)
+    else
+        None
+
+// Nodo para la prioridad de A*
+type Nodo = {
+    Estado: int list
+    G: int
+    F: int
+    Camino: string list
+}
+
+// Comparador de prioridad
+type ComparadorNodo() =
+    interface IComparer<Nodo> with
+        member _.Compare(a, b) =
+            compare a.F b.F
+
+// A* principal
+let resolverPuzzle (inicio: int list) : string list =
+    let objetivo = [0;1;2;3;4;5;6;7;8]
+
+    let abiertos = SortedSet<Nodo>(ComparadorNodo())
+    let cerrados = HashSet<int list>()
+
+    let inicial = {
+        Estado = inicio
+        G = 0
+        F = heuristica inicio
+        Camino = []
+    }
+
+    abiertos.Add inicial |> ignore
+
+    let mutable encontrado = None
+
+    while abiertos.Count > 0 && encontrado.IsNone do
+        let actual = abiertos.Minimum
+        abiertos.Remove actual |> ignore
+
+        if actual.Estado = objetivo then
+            encontrado <- Some actual.Camino
+        else
+            cerrados.Add actual.Estado |> ignore
+
+            for accion in ["Up"; "Down"; "Left"; "Right"] do
+                match aplicarMovimiento actual.Estado accion with
+                | Some nuevoEstado when not (cerrados.Contains nuevoEstado) ->
+                    let g = actual.G + 1
+                    let f = g + heuristica nuevoEstado
+                    let nuevoNodo = {
+                        Estado = nuevoEstado
+                        G = g
+                        F = f
+                        Camino = actual.Camino @ [accion]
+                    }
+                    abiertos.Add nuevoNodo |> ignore
+                | _ -> ()
+    
+    match encontrado with
+    | Some camino -> camino
+    | None -> failwith "No tiene solución"
+
+// -------------------------
+// EJEMPLO DE USO
+// -------------------------
+// let res = resolverPuzzle [1;2;5;3;4;0;6;7;8]
+// printfn "%A" res
