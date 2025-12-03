@@ -38,3 +38,10 @@ Considere la declaración let rec f = function | (0,y) -> y | (x,y) -> f(x-1, x*
 ¿Cual es el valor de la evaluación de f 5 usando la siguiente definición en F#?. let rec f = function | 0 -> 0 | n -> n + f (n - 1) 15
 ('a', ("b", true), 1.0) >= ('a', ("b", false), 10.0): true
 ¿Cual es la salida de la siguiente expresión en F# en modo interactivo? let x = 5.0 let y = x * 10 y / 10 = 5;; error FS0001: The type 'int' does not match the type 'float'
+
+
+git add .
+git commit -m "Test"
+git push
+
+git pull
