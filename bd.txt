@@ -1,154 +1,76 @@
 respuestas:
-1.-
+Historia completa de las cosas percibidas
 
-let resolverEcuacion () : (string * int) list =
-    let dominio = [1..10]
+Agente basado en utilidad
 
-    let rec backtrack listaVars =
-        match listaVars with
-        // Ya tenemos A, B y C → verificar restricciones
-        | [("A", a); ("B", b); ("C", c)] ->
-            if a < b && a + b = c then
-                Some [("A", a); ("B", b); ("C", c)]
-            else
-                None
+Entorno de tareas (PEAS)
 
-        // A y B asignados → elegir C
-        | [("A", a); ("B", b)] ->
-            dominio
-            |> List.tryPick (fun c ->
-                backtrack [("A", a); ("B", b); ("C", c)]
-            )
+Estocástico
 
-        // Solo A asignado → elegir B
-        | [("A", a)] ->
-            dominio
-            |> List.tryPick (fun b ->
-                backtrack [("A", a); ("B", b)]
-            )
+False
 
-        // Ninguna variable → elegir A
-        | [] ->
-            dominio
-            |> List.tryPick (fun a ->
-                backtrack [("A", a)]
-            )
+Búsqueda preferente en amplitud
 
-        | _ -> None
+Manteniendo un conjunto de vértices visitados
 
-    // Ejecutar backtracking y devolver solución
-    backtrack []
-    |> Option.defaultValue []
+Búsqueda preferente por amplitud, Búsqueda de costo uniforme
 
+Todas las demás
 
+False
 
+val it : float = 3.141592654
 
+val areaCirculo : r:float -> float , val it : float = 12.56637061
 
+Ninguna de las otras
 
-2.-
+Ninguna de las otras
 
-open System
-open System.Collections.Generic
+let f = fun n -> 4 * n * n, let f n = 4 * n * n
 
-// Heurística: piezas fuera de lugar (sin contar el 0)
-let heuristica (estado: int list) =
-    estado
-    |> List.mapi (fun i v -> if v <> 0 && v <> i then 1 else 0)
-    |> List.sum
+let f = function | n -> 4 * n * n, let f = fun n -> 4 * n * n, let f n = 4 * n * n
 
-// Movimientos posibles (Up, Down, Left, Right)
-let movimientos =
-    dict [
-        "Up",    -3
-        "Down",   3
-        "Left",  -1
-        "Right",  1
-    ]
+Ninguna de las otras
 
-// Verifica si un movimiento es válido
-let movimientoValido pos accion =
-    match accion with
-    | "Up"    -> pos > 2
-    | "Down"  -> pos < 6
-    | "Left"  -> pos % 3 <> 0
-    | "Right" -> pos % 3 <> 2
-    | _ -> false
+False
 
-// Aplica un movimiento y genera un nuevo estado
-let aplicarMovimiento (estado: int list) accion =
-    let pos0 = estado |> List.findIndex (fun x -> x = 0)
-    if movimientoValido pos0 accion then
-        let offset = movimientos.[accion]
-        let newPos = pos0 + offset
-        let arr = estado |> List.toArray
-        let tmp = arr.[newPos]
-        arr.[newPos] <- 0
-        arr.[pos0] <- tmp
-        Some (arr |> Array.toList)
-    else
-        None
+error FS0001: The type 'int' does not match the type 'float'
 
-// Nodo para la prioridad de A*
-type Nodo = {
-    Estado: int list
-    G: int
-    F: int
-    Camino: string list
-}
+Agente basado en utilidad
 
-// Comparador de prioridad
-type ComparadorNodo() =
-    interface IComparer<Nodo> with
-        member _.Compare(a, b) =
-            compare a.F b.F
+4
 
-// A* principal
-let resolverPuzzle (inicio: int list) : string list =
-    let objetivo = [0;1;2;3;4;5;6;7;8]
+Parcial y completos
 
-    let abiertos = SortedSet<Nodo>(ComparadorNodo())
-    let cerrados = HashSet<int list>()
+Estático
 
-    let inicial = {
-        Estado = inicio
-        G = 0
-        F = heuristica inicio
-        Camino = []
-    }
+Optimalidad, Complejidad en espacio y tiempo, Completitud
 
-    abiertos.Add inicial |> ignore
+O(b^(d+1)) y O(b^(d+1))
 
-    let mutable encontrado = None
+Búsqueda preferente por amplitud, Búsqueda de costo uniforme
 
-    while abiertos.Count > 0 && encontrado.IsNone do
-        let actual = abiertos.Minimum
-        abiertos.Remove actual |> ignore
+Búsqueda preferente por profundidad
 
-        if actual.Estado = objetivo then
-            encontrado <- Some actual.Camino
-        else
-            cerrados.Add actual.Estado |> ignore
+Enfoque heurístico
 
-            for accion in ["Up"; "Down"; "Left"; "Right"] do
-                match aplicarMovimiento actual.Estado accion with
-                | Some nuevoEstado when not (cerrados.Contains nuevoEstado) ->
-                    let g = actual.G + 1
-                    let f = g + heuristica nuevoEstado
-                    let nuevoNodo = {
-                        Estado = nuevoEstado
-                        G = g
-                        F = f
-                        Camino = actual.Camino @ [accion]
-                    }
-                    abiertos.Add nuevoNodo |> ignore
-                | _ -> ()
-    
-    match encontrado with
-    | Some camino -> camino
-    | None -> failwith "No tiene solución"
+False
 
-// -------------------------
-// EJEMPLO DE USO
-// -------------------------
-// let res = resolverPuzzle [1;2;5;3;4;0;6;7;8]
-// printfn "%A" res
+// Comentario
+
+Ninguna de las otras
+
+[1; 2; 3; 4; 4; 3; 2; 1]
+
+[3; 2; 1; 4; 5]
+
+[(1, 2); (2, 1); (2, 3); (3, 2); (3, 4); (4, 3); (4, 5); (5, 4)]
+
+6
+
+15
+
+true
+
+error FS0001: The type 'int' does not match the type 'float'
