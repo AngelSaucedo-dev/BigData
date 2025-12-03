@@ -16,3 +16,25 @@ Indique la evaluación de la siguiente expresión [2.4 .. 3.0 ** 1.7] Note que 3
 Seleccione definiciones correctas para g : int -> int, donde g(n)=4n2: let f = fun n -> 4 * n * n, let f n = 4 * n * n
 Seleccione definiciones correctas para g : int -> int, donde g(n)=4n^2: let f = function | n -> 4 * n * n, let f = fun n -> 4 * n * n, let f n = 4 * n * n
 ¿Cual es el valor de la evaluación de f(3.0, 2) usando la siguiente definición en F#?. let cero = 0;; let rec f = function | (x,cero) -> 1.0 | (x,n) -> x * f(x,n-1);;: Ninguna de las otras. (La evaluación de f(3.0, 2) sería 3.0 * 3.0 * 1.0 = 9.0, que no aparece entre las opciones.)
+(2, "a") < (1, "ab"): False
+Cual es la salida de la siguiente expresión en F# en modo interactivo? let variable = 5.0 variable * 10;;: error FS0001: The type 'int' does not match the type 'float'
+¿Qué agente trata con estados felices e infelices? Agente basado en utilidad
+¿Cuántos tipos de agentes hay en la inteligencia artificial? 4
+¿Qué tipo de entornos de observación están presentes en la inteligencia artificial? Parcial y completos
+¿Qué tipo de entorno es el crucigrama? estático
+Los componentes principales para medir el desempeño de la resolución de problemas Optimalidad, Complejidad en espacio y tiempo, Completitud
+La complejidaden espacio y tiempo de la búsqueda preferente por amplitud es (considere b como factor de ramificación y d como profundidad del árbol de búsqueda). O(b^(d+1)) y O(b^(d+1))
+¿Cuál(es) de la siguientes técnicas de búsqueda son no informadas? Búsqueda preferente por amplitud, Búsqueda de costo uniforme
+¿Qué búsqueda es implementada mediante una pila? Búsqueda preferente por profundidad
+¿Cuál es la mejor manera de atacar problemas de juego (búsqueda entre adversarios)? Enfoque heurístico
+Una solución a un problema es una ruta desde el estado inicial hasta el estado de objetivo. La calidad de la solución se mide por la función de costo de ruta, y una solución óptima tiene el costo de ruta más alto entre todas las soluciones. Indique si es verdadero o falso False
+Indique cual de las siguientes expresiones es un comentario de una sola línea en F#. // Comentario
+¿Cual es la salida de la siguiente expresión en F# en modo interactivo? function | 2 -> 28 |4 ->30 |6 ->30 | 9 -> 30 | 11 -> 30 | _ -> 31;; it 10;;: Ninguna de las otras.
+(La expresión genera una función que, al evaluarse con 10, devuelve 31, pero la opción exacta no coincide con las listadas.)
+Suponga la siguiente declaración let rec h = function | [] -> [] | x :: xs -> x :: (h xs) @ [x] ¿Cuál es la evaluación de h [1;2;3;4]? [1; 2; 3; 4; 4; 3; 2; 1]
+Suponga la siguiente declaración let f xs ys = List.fold (fun xs x -> x::xs) xs ys ¿Cuál es la evaluación de f [1;2;3] [5; 4]?:  [3; 2; 1; 4; 5]
+Suponga la siguiente declaración let rec g = function | [] -> [] | (x,y) :: s -> (x,y) :: (y,x) :: g s ¿Cuál es la evaluación de g [(1,2);(2,3);(3,4);(4,5)]? [(1, 2); (2, 1); (2, 3); (3, 2); (3, 4); (4, 3); (4, 5); (5, 4)]
+Considere la declaración let rec f = function | (0,y) -> y | (x,y) -> f(x-1, x*y) ¿Cual es la evaluación de f (2, 3)? 6
+¿Cual es el valor de la evaluación de f 5 usando la siguiente definición en F#?. let rec f = function | 0 -> 0 | n -> n + f (n - 1) 15
+('a', ("b", true), 1.0) >= ('a', ("b", false), 10.0): true
+¿Cual es la salida de la siguiente expresión en F# en modo interactivo? let x = 5.0 let y = x * 10 y / 10 = 5;; error FS0001: The type 'int' does not match the type 'float'
